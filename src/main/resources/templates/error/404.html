@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Page Not Found - EventTix')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+
+<section style="min-height:65vh;display:flex;align-items:center;justify-content:center;padding:4rem 0;background:#F8FAFC;">
+    <div class="container" style="text-align:center;">
+        <div style="max-width:520px;margin:0 auto;">
+            <!-- 404 Illustration -->
+            <div style="position:relative;margin-bottom:2rem;">
+                <div style="font-size:8rem;font-weight:900;color:#E2E8F0;line-height:1;letter-spacing:-4px;">404</div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">
+                    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);display:flex;align-items:center;justify-content:center;">
+                        <i class="bi bi-search" style="font-size:2rem;color:#6366F1;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <h1 style="font-size:1.75rem;font-weight:800;color:#0F172A;margin-bottom:0.75rem;">Page Not Found</h1>
+            <p style="color:#64748B;font-size:1.05rem;line-height:1.7;margin-bottom:2rem;">Oops! The page you're looking for doesn't exist or may have been moved.</p>
+
+            <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+                <a th:href="@{/}" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.75rem;border-radius:12px;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;text-decoration:none;font-weight:700;font-size:0.95rem;">
+                    <i class="bi bi-house"></i> Go Home
+                </a>
+                <a th:href="@{/events}" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.8rem 1.75rem;border-radius:12px;background:#fff;color:#475569;text-decoration:none;font-weight:600;font-size:0.95rem;border:1px solid #E2E8F0;">
+                    <i class="bi bi-calendar-event"></i> Browse Events
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

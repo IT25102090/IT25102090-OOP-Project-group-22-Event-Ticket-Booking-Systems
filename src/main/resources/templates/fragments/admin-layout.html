@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ============================================================
+     ADMIN SIDEBAR LAYOUT FRAGMENT — Flat Navigation
+     Usage: th:replace="~{fragments/admin-layout :: adminSidebar(activeNav='dashboard')}"
+     ============================================================ -->
+<aside th:fragment="adminSidebar(activeNav)" class="admin-sidebar" id="adminSidebar">
+    <!-- Sidebar Header -->
+    <div class="admin-sidebar-header">
+        <a th:href="@{/admin/dashboard}" class="admin-sidebar-brand">
+            <span class="admin-brand-icon"><i class="bi bi-shield-lock-fill"></i></span>
+            <span class="admin-brand-text">Event<span class="admin-brand-accent">Tix</span></span>
+        </a>
+    </div>
+
+    <!-- Sidebar Navigation — Flat, Direct Links -->
+    <nav class="admin-sidebar-nav">
+
+        <a th:href="@{/admin/dashboard}"
+           th:classappend="${activeNav == 'dashboard'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <div class="admin-nav-section-label">System Modules</div>
+
+        <!-- Member 1: User Management -->
+        <a th:href="@{/admin/users}"
+           th:classappend="${activeNav == 'users'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-people-fill"></i>
+            <span>User Management</span>
+            <span class="admin-nav-badge" th:if="${userCount != null}" th:text="${userCount}">0</span>
+        </a>
+
+        <!-- Member 2: Event Management -->
+        <a th:href="@{/admin/events}"
+           th:classappend="${activeNav == 'events' || activeNav == 'add-event'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-calendar-event-fill"></i>
+            <span>Event Management</span>
+        </a>
+
+        <!-- Member 3: Booking & Reservation -->
+        <a th:href="@{/admin/bookings}"
+           th:classappend="${activeNav == 'bookings'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-ticket-detailed-fill"></i>
+            <span>Booking & Reservation</span>
+        </a>
+
+        <!-- Member 4: Admin & System -->
+        <a th:href="@{/admin/admin-list}"
+           th:classappend="${activeNav == 'admin-list' || activeNav == 'admin-register' || activeNav == 'admin-permissions' || activeNav == 'admin-activity'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-shield-lock-fill"></i>
+            <span>Admin & System</span>
+        </a>
+
+        <!-- Member 5: Category & Ticket Types -->
+        <a th:href="@{/categories/manage}"
+           th:classappend="${activeNav == 'categories'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-tags-fill"></i>
+            <span>Category & Ticket Types</span>
+        </a>
+
+        <!-- Member 6: Reviews & Feedback -->
+        <a th:href="@{/admin/reviews}"
+           th:classappend="${activeNav == 'reviews'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-star-fill"></i>
+            <span>Reviews & Feedback</span>
+        </a>
+
+        <div class="admin-nav-section-label">System</div>
+
+        <a th:href="@{/admin/data}"
+           th:classappend="${activeNav == 'data'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-database-fill"></i>
+            <span>Data Storage</span>
+        </a>
+
+        <a th:href="@{/admin/settings}"
+           th:classappend="${activeNav == 'settings'} ? ' active'"
+           class="admin-nav-link">
+            <i class="bi bi-gear-fill"></i>
+            <span>Settings</span>
+        </a>
+
+        <!-- Separator -->
+        <div style="border-top:1px solid var(--border-light);margin:0.6rem 0;"></div>
+
+        <a th:href="@{/}" class="admin-nav-link">
+            <i class="bi bi-house-fill"></i>
+            <span>View Website</span>
+        </a>
+
+        <a th:href="@{/admin/logout}" class="admin-nav-link danger-link">
+            <i class="bi bi-power"></i>
+            <span>Sign Out</span>
+        </a>
+    </nav>
+
+    <!-- Sidebar Footer / Admin Card -->
+    <div class="admin-sidebar-footer">
+        <div class="admin-sidebar-avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="admin-sidebar-user-info">
+            <span class="admin-sidebar-user-name" th:text="${adminName ?: 'Administrator'}">Admin</span>
+            <span class="admin-sidebar-user-role">Administrator</span>
+        </div>
+    </div>
+</aside>
+
+<!-- Mobile sidebar toggle button -->
+<button th:fragment="sidebarToggle" class="admin-sidebar-toggle" id="adminSidebarToggle" title="Toggle Sidebar">
+    <i class="bi bi-list"></i>
+</button>
+
+<!-- Mobile sidebar overlay -->
+<div th:fragment="sidebarOverlay" class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+</body>
+</html>
+
