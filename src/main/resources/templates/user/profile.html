@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('My Profile - EventTix')}"></head>
+<body>
+<link rel="stylesheet" th:href="@{/css/profile.css}">
+<nav th:replace="~{fragments/header :: navbar}"></nav>
+<div class="pg">
+  <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-3" style="font-size:.82rem;border-radius:12px;"><i class="bi bi-check-circle-fill"></i> <span th:text="${success}"></span><button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>
+  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-3" style="font-size:.82rem;border-radius:12px;"><i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${error}"></span><button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>
+
+  <div class="profile-cover">
+    <div class="cover-pattern"></div>
+    <div class="cover-actions">
+      <button class="cover-btn" onclick="toggleEdit()"><i class="bi bi-pencil-fill"></i> Edit Profile</button>
+      <a th:href="@{/events}" class="cover-btn" style="text-decoration:none;"><i class="bi bi-calendar-event-fill"></i> Browse Events</a>
+    </div>
+  </div>
+
+  <div class="profile-header-card">
+    <div class="phc-top">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" style="overflow: hidden; position: relative;">
+          <img th:src="@{'/uploads/profiles/' + ${user.id} + '.jpg'}" 
+               onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" 
+               style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Profile Photo" />
+          <span style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center;" th:text="${#strings.substring(user.name,0,1).toUpperCase()}">U</span>
+        </div>
+        <div class="avatar-status"></div>
+      </div>
+      <div class="phc-info">
+        <h1 th:text="${user.name}">User Name</h1>
+        <p class="phc-email" th:text="${user.email}">email@test.com</p>
+        <div class="phc-badges">
+          <span class="badge-pill badge-role"><i class="bi bi-person-fill"></i> Member</span>
+          <span th:if="${user.isPremium()}" class="badge-pill" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;"><i class="bi bi-gem"></i> Premium</span>
+          <span th:if="${!user.isPremium()}" class="badge-pill" style="background:#F3F4F6;color:#6B7280;"><i class="bi bi-person-check"></i> Free</span>
+          <span class="badge-pill badge-active"><i class="bi bi-circle-fill" style="font-size:.3rem;"></i> Active</span>
+          <span class="badge-pill badge-id" th:text="'#' + ${user.id}">ID</span>
+        </div>
+      </div>
+    </div>
+    <div class="phc-stats-bar">
+      <div class="phc-stat"><span class="phc-stat-icon" style="color:#6366f1;"><i class="bi bi-calendar-check-fill"></i></span><div class="phc-stat-num" th:text="${totalBookings}">0</div><div class="phc-stat-label">Bookings</div></div>
+      <div class="phc-stat"><span class="phc-stat-icon" style="color:#10b981;"><i class="bi bi-check-circle-fill"></i></span><div class="phc-stat-num" th:text="${confirmedBookings}">0</div><div class="phc-stat-label">Confirmed</div></div>
+      <div class="phc-stat"><span class="phc-stat-icon" style="color:#f59e0b;"><i class="bi bi-ticket-detailed-fill"></i></span><div class="phc-stat-num" th:text="${totalTickets}">0</div><div class="phc-stat-label">Tickets</div></div>
+      <div class="phc-stat"><span class="phc-stat-icon" style="color:#8b5cf6;"><i class="bi bi-cash-stack"></i></span><div class="phc-stat-num" style="font-size:1.1rem;">LKR <span th:text="${#numbers.formatInteger(totalSpent,1,'COMMA')}">0</span></div><div class="phc-stat-label">Total Spent</div></div>
+    </div>
+  </div>
+
+  <div class="qa-bar">
+    <a href="#" class="qa" onclick="toggleEdit();return false;"><div class="qa-ic" style="background:#ecfdf5;color:#059669;"><i class="bi bi-pencil-fill"></i></div><div><div class="qa-txt">Edit Profile</div><div class="qa-sub">Update your info</div></div></a>
+    <a th:href="@{/events}" class="qa"><div class="qa-ic" style="background:#eef2ff;color:#6366f1;"><i class="bi bi-calendar-event-fill"></i></div><div><div class="qa-txt">Browse Events</div><div class="qa-sub">Find experiences</div></div></a>
+    <a th:href="@{/booking/history}" class="qa"><div class="qa-ic" style="background:#fef3c7;color:#d97706;"><i class="bi bi-journal-text"></i></div><div><div class="qa-txt">Booking History</div><div class="qa-sub">View past orders</div></div></a>
+
+    <a th:href="@{/}" class="qa"><div class="qa-ic" style="background:#f3f4f6;color:#6b7280;"><i class="bi bi-house-fill"></i></div><div><div class="qa-txt">Home</div><div class="qa-sub">Back to site</div></div></a>
+  </div>
+
+  <div class="p-grid">
+
+    <div class="pc">
+      <div class="pc-h"><h5><i class="bi bi-person-vcard-fill" style="color:#10b981;"></i> Personal Information</h5><button class="pc-act" onclick="toggleEdit()"><i class="bi bi-pencil"></i> Edit</button></div>
+      <div class="pc-b">
+        <div class="vm" id="viewMode">
+          <div class="ig">
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-person-fill" style="color:#6366f1;"></i> Full Name</div><div class="ig-val" th:text="${user.name}">Name</div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-envelope-fill" style="color:#6366f1;"></i> Email Address</div><div class="ig-val" th:text="${user.email}">email</div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-telephone-fill" style="color:#6366f1;"></i> Phone Number</div><div class="ig-val" th:text="${user.phone != null and user.phone != '' ? user.phone : '—'}">phone</div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-credit-card-fill" style="color:#6366f1;"></i> NIC / Passport</div><div class="ig-val" th:text="${user.nic != null and user.nic != '' ? user.nic : '—'}">NIC</div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-shield-fill" style="color:#6366f1;"></i> Account Role</div><div class="ig-val"><span class="rb rb-member"><i class="bi bi-person-fill"></i> Member</span></div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-gem" style="color:#d97706;"></i> Membership</div><div class="ig-val"><span th:if="${user.isPremium()}" class="rb" style="background:#FEF3C7;color:#92400E;"><i class="bi bi-gem"></i> Premium</span><span th:if="${!user.isPremium()}" class="rb rb-member"><i class="bi bi-person-check"></i> Free Plan</span></div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-calendar-check" style="color:#10b981;"></i> Joined</div><div class="ig-val" th:text="${user.registrationDate != null and user.registrationDate != '' ? user.registrationDate : 'N/A'}">Date</div></div>
+            <div class="ig-item"><div class="ig-lbl"><i class="bi bi-circle-fill" style="color:#10b981;font-size:.5rem;"></i> Status</div><div class="ig-val"><span class="rb rb-active"><i class="bi bi-circle-fill" style="font-size:.3rem;"></i> Active</span></div></div>
+          </div>
+        </div>
+        <div class="ef" id="editForm">
+          <form th:action="@{/user/edit}" method="post">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;">
+              <div class="fg"><label>Full Name</label><input class="fin" type="text" name="name" th:value="${user.name}" required></div>
+              <div class="fg"><label>Email</label><input class="fin" type="email" name="email" th:value="${user.email}" required></div>
+              <div class="fg"><label>Phone</label><input class="fin" type="text" name="phone" th:value="${user.phone}" placeholder="+94-7XX-XXXXXX"></div>
+              <div class="fg"><label>NIC / Passport</label><input class="fin" type="text" name="nic" th:value="${user.nic}" placeholder="National ID or Passport"></div>
+            </div>
+            <div style="display:flex;gap:.5rem;margin-top:.5rem;justify-content:flex-end;">
+              <button type="button" class="cn-btn" onclick="toggleEdit()">Cancel</button>
+              <button type="submit" class="sv-btn"><i class="bi bi-check-circle-fill"></i> Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h"><h5><i class="bi bi-shield-lock-fill" style="color:#6366f1;"></i> Identity & Security</h5></div>
+      <div class="pc-b">
+        <div class="nic-row" style="margin-bottom:1rem;">
+          <div class="nic-ic"><i class="bi bi-credit-card-2-front-fill"></i></div>
+          <div style="flex:1;min-width:0;">
+            <div class="nic-lbl">NIC / Passport</div>
+            <div class="nic-val" th:text="${user.nic != null and user.nic != '' ? user.nic : 'Not provided'}">NIC</div>
+          </div>
+          <div th:if="${user.nic != null and user.nic != ''}"><span class="nic-ok"><i class="bi bi-check-circle-fill"></i> Verified</span></div>
+        </div>
+        <div style="padding-top:.8rem;border-top:1px solid #f3f4f6;">
+          <div style="font-size:.8rem;font-weight:800;color:#111827;margin-bottom:.6rem;display:flex;align-items:center;gap:6px;"><i class="bi bi-key-fill" style="color:#f59e0b;"></i> Change Password</div>
+          <form th:action="@{/user/edit}" method="post">
+            <input type="hidden" name="name" th:value="${user.name}">
+            <input type="hidden" name="email" th:value="${user.email}">
+            <input type="hidden" name="phone" th:value="${user.phone}">
+            <input type="hidden" name="nic" th:value="${user.nic}">
+            <div class="fg"><label>New Password</label><input class="fin" type="password" name="password" placeholder="Min 6 characters" minlength="6"></div>
+            <div style="font-size:.68rem;color:#9ca3af;margin-bottom:.6rem;"><i class="bi bi-info-circle"></i> Leave blank to keep current password.</div>
+            <button type="submit" class="sv-btn" style="padding:.5rem 1.2rem;font-size:.78rem;"><i class="bi bi-key-fill"></i> Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h">
+        <h5><i class="bi bi-ticket-detailed-fill" style="color:#6366f1;"></i> Recent Bookings</h5>
+        <div style="display:flex;gap:5px;">
+          <span class="badge bg-success" style="font-size:.62rem;border-radius:50px;" th:text="${confirmedBookings} + ' confirmed'">0</span>
+          <span class="badge bg-danger" style="font-size:.62rem;border-radius:50px;" th:text="${cancelledBookings} + ' cancelled'">0</span>
+        </div>
+      </div>
+      <div class="pc-b bookings-body">
+        <div th:if="${!#lists.isEmpty(bookings)}">
+          <div th:each="booking : ${bookings}" class="bki">
+            <div class="bk-av" th:classappend="${booking.status == 'CONFIRMED'} ? 'c' : 'x'"><i class="bi" th:classappend="${booking.status == 'CONFIRMED'} ? 'bi-check-lg' : 'bi-x-lg'"></i></div>
+            <div style="flex:1;min-width:0;">
+              <div class="bk-nm" th:text="${eventMap[booking.eventId] != null ? eventMap[booking.eventId].name : booking.eventId}">Event</div>
+              <div class="bk-mt"><span><i class="bi bi-calendar3"></i> <span th:text="${booking.bookingDate}">Date</span></span><span><i class="bi bi-ticket"></i> <span th:text="${booking.quantity}">1</span></span></div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div class="bk-amt">LKR <span th:text="${#numbers.formatInteger(booking.totalAmount,1,'COMMA')}">0</span></div>
+              <span class="bk-st" th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success text-white' : 'bg-danger text-white'" th:text="${booking.status}">S</span>
+            </div>
+          </div>
+        </div>
+        <div th:if="${#lists.isEmpty(bookings)}" class="bk-empty">
+          <i class="bi bi-ticket-detailed"></i>
+          <p style="font-size:.85rem;font-weight:700;color:#6b7280;margin:.4rem 0;">No bookings yet</p>
+          <p style="font-size:.72rem;color:#9ca3af;margin-bottom:.8rem;">Explore and book your first event!</p>
+          <a th:href="@{/events}" class="sv-btn" style="text-decoration:none;font-size:.75rem;padding:.45rem 1.2rem;"><i class="bi bi-calendar-event"></i> Browse Events</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h"><h5><i class="bi bi-bell-fill" style="color:#8b5cf6;"></i> Notification Preferences</h5></div>
+      <div class="pc-b">
+        <div class="si"><div><div class="si-l"><i class="bi bi-check-circle" style="color:#10b981;margin-right:5px;"></i>Booking Confirmations</div><div class="si-d">Email on booking confirm/cancel</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-alarm" style="color:#f59e0b;margin-right:5px;"></i>Event Reminders</div><div class="si-d">24h before your events</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-megaphone" style="color:#6366f1;margin-right:5px;"></i>Promotional Emails</div><div class="si-d">Deals and special offers</div></div><label class="tgl"><input type="checkbox"><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-envelope-paper" style="color:#ec4899;margin-right:5px;"></i>Newsletter</div><div class="si-d">Weekly trending events</div></div><label class="tgl"><input type="checkbox"><span class="tgl-s"></span></label></div>
+
+      </div>
+    </div>
+
+    <div class="p-full bottom-grid">
+
+      <div>
+
+
+        <div class="dz">
+          <div style="width:40px;height:40px;border-radius:12px;background:#fef2f2;display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:1rem;flex-shrink:0;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <div class="dz-info">
+            <h6>Danger Zone</h6>
+            <p>Permanently delete your account and all data.</p>
+          </div>
+          <form th:action="@{/user/delete}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure? This cannot be undone.');">
+            <button type="submit" class="btn btn-outline-danger btn-sm fw-bold" style="font-size:.72rem;border-radius:10px;white-space:nowrap;"><i class="bi bi-trash3-fill"></i> Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/footer :: scripts}"></div>
+<script>
+function toggleEdit(){var v=document.getElementById('viewMode'),e=document.getElementById('editForm');v.classList.toggle('hide');e.classList.toggle('show');}
+</script>
+</body>
+</html>
