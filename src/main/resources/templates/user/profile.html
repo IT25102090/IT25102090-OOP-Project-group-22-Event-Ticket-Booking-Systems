@@ -146,8 +146,38 @@
       </div>
     </div>
 
+    <div class="pc">
+      <div class="pc-h"><h5><i class="bi bi-bell-fill" style="color:#8b5cf6;"></i> Notification Preferences</h5></div>
+      <div class="pc-b">
+        <div class="si"><div><div class="si-l"><i class="bi bi-check-circle" style="color:#10b981;margin-right:5px;"></i>Booking Confirmations</div><div class="si-d">Email on booking confirm/cancel</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-alarm" style="color:#f59e0b;margin-right:5px;"></i>Event Reminders</div><div class="si-d">24h before your events</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-megaphone" style="color:#6366f1;margin-right:5px;"></i>Promotional Emails</div><div class="si-d">Deals and special offers</div></div><label class="tgl"><input type="checkbox"><span class="tgl-s"></span></label></div>
+        <div class="si"><div><div class="si-l"><i class="bi bi-envelope-paper" style="color:#ec4899;margin-right:5px;"></i>Newsletter</div><div class="si-d">Weekly trending events</div></div><label class="tgl"><input type="checkbox"><span class="tgl-s"></span></label></div>
+
+      </div>
     </div>
+
+    <div class="p-full bottom-grid">
+
+      <div>
+
+
+        <div class="dz">
+          <div style="width:40px;height:40px;border-radius:12px;background:#fef2f2;display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:1rem;flex-shrink:0;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <div class="dz-info">
+            <h6>Danger Zone</h6>
+            <p>Permanently delete your account and all data.</p>
+          </div>
+          <form th:action="@{/user/delete}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure? This cannot be undone.');">
+            <button type="submit" class="btn btn-outline-danger btn-sm fw-bold" style="font-size:.72rem;border-radius:10px;white-space:nowrap;"><i class="bi bi-trash3-fill"></i> Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <div th:replace="~{fragments/footer :: scripts}"></div>
