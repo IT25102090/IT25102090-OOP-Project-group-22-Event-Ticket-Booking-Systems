@@ -89,6 +89,63 @@
       </div>
     </div>
 
+    <div class="pc">
+      <div class="pc-h"><h5><i class="bi bi-shield-lock-fill" style="color:#6366f1;"></i> Identity & Security</h5></div>
+      <div class="pc-b">
+        <div class="nic-row" style="margin-bottom:1rem;">
+          <div class="nic-ic"><i class="bi bi-credit-card-2-front-fill"></i></div>
+          <div style="flex:1;min-width:0;">
+            <div class="nic-lbl">NIC / Passport</div>
+            <div class="nic-val" th:text="${user.nic != null and user.nic != '' ? user.nic : 'Not provided'}">NIC</div>
+          </div>
+          <div th:if="${user.nic != null and user.nic != ''}"><span class="nic-ok"><i class="bi bi-check-circle-fill"></i> Verified</span></div>
+        </div>
+        <div style="padding-top:.8rem;border-top:1px solid #f3f4f6;">
+          <div style="font-size:.8rem;font-weight:800;color:#111827;margin-bottom:.6rem;display:flex;align-items:center;gap:6px;"><i class="bi bi-key-fill" style="color:#f59e0b;"></i> Change Password</div>
+          <form th:action="@{/user/edit}" method="post">
+            <input type="hidden" name="name" th:value="${user.name}">
+            <input type="hidden" name="email" th:value="${user.email}">
+            <input type="hidden" name="phone" th:value="${user.phone}">
+            <input type="hidden" name="nic" th:value="${user.nic}">
+            <div class="fg"><label>New Password</label><input class="fin" type="password" name="password" placeholder="Min 6 characters" minlength="6"></div>
+            <div style="font-size:.68rem;color:#9ca3af;margin-bottom:.6rem;"><i class="bi bi-info-circle"></i> Leave blank to keep current password.</div>
+            <button type="submit" class="sv-btn" style="padding:.5rem 1.2rem;font-size:.78rem;"><i class="bi bi-key-fill"></i> Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h">
+        <h5><i class="bi bi-ticket-detailed-fill" style="color:#6366f1;"></i> Recent Bookings</h5>
+        <div style="display:flex;gap:5px;">
+          <span class="badge bg-success" style="font-size:.62rem;border-radius:50px;" th:text="${confirmedBookings} + ' confirmed'">0</span>
+          <span class="badge bg-danger" style="font-size:.62rem;border-radius:50px;" th:text="${cancelledBookings} + ' cancelled'">0</span>
+        </div>
+      </div>
+      <div class="pc-b bookings-body">
+        <div th:if="${!#lists.isEmpty(bookings)}">
+          <div th:each="booking : ${bookings}" class="bki">
+            <div class="bk-av" th:classappend="${booking.status == 'CONFIRMED'} ? 'c' : 'x'"><i class="bi" th:classappend="${booking.status == 'CONFIRMED'} ? 'bi-check-lg' : 'bi-x-lg'"></i></div>
+            <div style="flex:1;min-width:0;">
+              <div class="bk-nm" th:text="${eventMap[booking.eventId] != null ? eventMap[booking.eventId].name : booking.eventId}">Event</div>
+              <div class="bk-mt"><span><i class="bi bi-calendar3"></i> <span th:text="${booking.bookingDate}">Date</span></span><span><i class="bi bi-ticket"></i> <span th:text="${booking.quantity}">1</span></span></div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div class="bk-amt">LKR <span th:text="${#numbers.formatInteger(booking.totalAmount,1,'COMMA')}">0</span></div>
+              <span class="bk-st" th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success text-white' : 'bg-danger text-white'" th:text="${booking.status}">S</span>
+            </div>
+          </div>
+        </div>
+        <div th:if="${#lists.isEmpty(bookings)}" class="bk-empty">
+          <i class="bi bi-ticket-detailed"></i>
+          <p style="font-size:.85rem;font-weight:700;color:#6b7280;margin:.4rem 0;">No bookings yet</p>
+          <p style="font-size:.72rem;color:#9ca3af;margin-bottom:.8rem;">Explore and book your first event!</p>
+          <a th:href="@{/events}" class="sv-btn" style="text-decoration:none;font-size:.75rem;padding:.45rem 1.2rem;"><i class="bi bi-calendar-event"></i> Browse Events</a>
+        </div>
+      </div>
+    </div>
+
     </div>
 </div>
 
